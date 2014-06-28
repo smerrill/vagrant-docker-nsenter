@@ -9,7 +9,7 @@ module VagrantPlugins
 
       command "docker-nsenter" do
         require_relative "command/nsenter"
-        init!
+        #init!
         Command::NSEnter
       end
 

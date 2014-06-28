@@ -10,14 +10,6 @@ require "pathname"
 
 module VagrantPlugins
   module DockerNSEnter
-    #lib_path = Pathname.new(File.expand_path("../vagrant-docker-nsenter", __FILE__))
-    #autoload :Errors, lib_path.join("errors")
-    #autoload :ListenOSX, lib_path.join("listen/listenosx")
-    #autoload :ListenLinux, lib_path.join("listen/listenlinux")
-
-    # This returns the path to the source of this plugin.
-    #
-    # @return [Pathname]
     def self.source_root
       @source_root ||= Pathname.new(File.expand_path("../../", __FILE__))
     end
