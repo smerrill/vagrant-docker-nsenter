@@ -8,7 +8,7 @@ You can run non-interactive commands on all your containers or an interactive
 command on a single container. The command defaults to an interactive
 invocation of `/bin/bash` so that you get a shell in the container.
 
-## Considerations
+## Known Issues
 
 The default boot2docker proxy VM does not come with nsenter. There
 [an issue open for its inclusion in the boot2docker project](https://github.com/boot2docker/boot2docker/issues/374).
@@ -16,6 +16,12 @@ The default boot2docker proxy VM does not come with nsenter. There
 Therefore, at this time, this plugin may only be useful when running a custom
 proxy VM using [the vagrant_vagrantfile or vagrant_machine options](https://docs.vagrantup.com/v2/docker/configuration.html)
 to the Docker provider.
+
+This plugin has been tested on Mac OS X and Linux hosts. On OS X it has been
+tested with a CoreOS proxy VM.
+
+On Linux hosts, non-interactive commands work. Interactive commands like shells
+do not currently work.
 
 ## Getting started
 
