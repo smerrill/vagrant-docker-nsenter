@@ -1,85 +1,42 @@
-# vagrant-gatling-rsync
+# vagrant-docker-nsenter
 
-An rsync watcher for Vagrant 1.5.1+ that uses fewer host resources at the
-potential cost of more rsync actions.
+This plugin allows you to use the `nsenter` command from your host (or from
+your proxy VM if you are on Windows or Mac OS X) to run commands in your
+Vagrant-provisioned Docker containers.
+
+You can run non-interactive commands on all your containers or an interactive
+command on a single container. The command defaults to an interactive
+invocation of `/bin/bash` so that you get a shell in the container.
+
+## Considerations
+
+The default boot2docker proxy VM does not come with nsenter. There
+[an issue open for its inclusion in the boot2docker project](https://github.com/boot2docker/boot2docker/issues/374).
+
+Therefore, at this time, this plugin may only be useful when running a custom
+proxy VM using [the vagrant_vagrantfile or vagrant_machine options](https://docs.vagrantup.com/v2/docker/configuration.html)
+to the Docker provider.
 
 ## Getting started
 
-To get started, you need to have Vagrant 1.5.1 installed on your Linux or
-Mac OS X host machine. To install the plugin, use the following command.
+To get started, you need to have Vagrant 1.6+ installed on your host machine.
+To install the plugin, use the following command.
 
 ```bash
-vagrant plugin install vagrant-gatling-rsync
+vagrant plugin install vagrant-docker-nsenter
 ```
 
 ## Working with this plugin
 
-Add the following information to the Vagrantfile to set the coalescing
-threshold in seconds. If you do not set it, it will default to 1.5.
+The syntax for this command is similar to `vagrant docker-run` in that you
+must put the commands you wish to run after an `--`.
 
-You will also need to have at least one synced folder set to type "rsync"
-to use the plugin.
+The command will default to running interactively, but you may also specify
+`--no-interactive` to run commands non-interactively.
 
-```ruby
-VAGRANTFILE_API_VERSION = "2"
+Given three containers called `web`, `php`, and `mysql` you can run a single
+non-interactive command on all hosts.
 
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "hashicorp/precise64"
+## Author
 
-  config.vm.synced_folder "../files", "/opt/vagrant/rsynced_folder", type: "rsync",
-    rsync__exclude: [".git/", ".idea/"]
-
-  # Configure the window for gatling to coalesce writes.
-  if Vagrant.has_plugin?("vagrant-gatling-rsync")
-    config.gatling.latency = 2.5
-  end
-end
-```
-
-With the Vagrantfile configured in this fashion, you can run the following
-command to sync files.
-
-```bash
-vagrant gatling-rsync-auto
-```
-
-## Why "gatling"?
-
-The gatling gun was the first gun capable of firing continuously.
-
-## This plugin
-
-The built-in rsync-auto plugin sometimes uses a lot of CPU and disk I/O when
-it starts up on very large rsynced directories. This plugin is designed to
-work well with such large rsynced folders.
-
-The rsync-auto command that ships with Vagrant 1.5 uses the listen gem. The
-Listen gem is quite thorough - it uses Celluloid to spin up an actor system
-and it checks file contents on OS X to ensure that running "touch" on a file
-(to do a write but not update its content) will not fire the rsync command.
-
-The downside of using Listen is that it takes a large amount of host resources
-to monitor large directory structures. This gem works well with to monitor
-directories hierarchies with 10,000-100,000 files.
-
-This gem's implementation is much closer to the underlying fsevent or inotify
-APIs, which allows for higher performance.
-
-## Event coalescing
-
-This plugin also coalesces events for you. The default latency is 1.5 seconds.
-It is configurable through the `config.gatling.latency` parameter.
-If you specify a latency of two seconds, this plugin will not fire a
-`vagrant rsync` until two contiguous seconds without file events have passed.
-This will delay rsyncs from happening if many writes are happening on the host
-(during a `make` or a `git clone`, for example) until the activity has leveled off.
-
-## Authors
-
-Steven Merrill (@stevenmerrill) originally had the idea to tap into rb-fsevent
-and rb-inotify to more efficiently rsync files.
-
-Doug Marcey (@dougmarcey) provided considerable guidance in the implementation
-of the coalescing functionality and wrote the initial sketch of the Linux and
-Windows adapters.
-
+Steven Merrill (@stevenmerrill) wrote this for use at @phase2.
