@@ -1,0 +1,5 @@
+en:
+  vagrant_docker_nsenter:
+    errors:
+      vagrant_16_required: |-
+        This plugin requires Vagrant 1.6.0 or newer to function.

@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = VagrantPlugins::DockerNSEnter::VERSION
   spec.authors       = ["Steven Merrill"]
   spec.email         = ["steven.merrill@gmail.com"]
-  spec.summary       = %q{A lighter-weight Vagrant plugin for watching and rsyncing directories.}
-  spec.description   = %q{The docker-nsenter plugin runs on Mac and Linux and is far less CPU-intensive than the built-in rsync-auto.}
+  spec.summary       = %q{A way to attach to Vagrant-managed Docker containers.}
+  spec.description   = %q{The docker-nsenter plugin allows you to use the nsenter binary on your host or the Vagrant proxy VM to run commands or get a shell in Vagrant-managed Docker containers.}
   spec.homepage      = ""
   spec.license       = "MIT"
 

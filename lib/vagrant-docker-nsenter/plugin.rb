@@ -1,3 +1,15 @@
+begin
+    require "vagrant"
+rescue LoadError
+    raise "The Vagrant docker-nsenter plugin must be run within Vagrant."
+end
+
+# This is a sanity check to make sure no one is attempting to install
+# this into an early Vagrant version.
+if Vagrant::VERSION < "1.6.0"
+  raise Errors::VagrantTooOld
+end
+
 module VagrantPlugins
   module DockerNSEnter
     class Plugin < Vagrant.plugin("2")
