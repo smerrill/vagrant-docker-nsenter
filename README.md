@@ -34,8 +34,36 @@ must put the commands you wish to run after an `--`.
 The command will default to running interactively, but you may also specify
 `--no-interactive` to run commands non-interactively.
 
+Output of non-interactive commands defaults to being prefixed with the
+container name. This can be disabled with the `--no-prefix` flag.
+
 Given three containers called `web`, `php`, and `mysql` you can run a single
 non-interactive command on all hosts.
+
+```bash
+$ vagrant docker-nsenter --no-interactive -- hostname
+==> mysql: 6223741bc113
+==> php: 71dca3d53a0f
+==> web: fe1d05768d5b
+```
+
+Or if you did not want prefixed output, add `--no-prefix`.
+
+```bash
+$ vagrant docker-nsenter --no-interactive --no-prefix -- hostname
+6223741bc113
+71dca3d53a0f
+fe1d05768d5b
+```
+
+Finally, if you wanted to get an interactive shell, you can just invoke
+`vagrant docker-nsenter` with the machine name. This will default to running
+`/bin/bash`.
+
+```bash
+$ vagrant docker-nsenter mysql
+root@6223741bc113:/#
+```
 
 ## Author
 

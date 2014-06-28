@@ -9,6 +9,7 @@ module VagrantPlugins
         def execute
           options = {}
           options[:interactive] = true
+          options[:prefix] = true
 
           opts = OptionParser.new do |o|
             o.banner = "Usage: vagrant docker-nsenter [command...]"
@@ -19,6 +20,11 @@ module VagrantPlugins
             o.on("--[no-]interactive", "Run the command interactively") do |i|
               options[:interactive] = i
             end
+
+            o.on("--[no-]prefix", "Prefix the output with the machine name") do |p|
+              options[:prefix] = p
+            end
+
           end
 
           # Parse out the extra args to send to nsenter, which is everything
@@ -36,7 +42,7 @@ module VagrantPlugins
 
           # Assume /bin/bash if no command is provided.
           if !split_index
-            command = "/bin/bash"
+            command = ["/bin/bash"]
           end
 
           target_opts = { provider: :docker }
@@ -76,7 +82,10 @@ module VagrantPlugins
           machine.provider.driver.execute(*nsenter_command, nsenter_options) do |type, data|
             nsenter_data += data
           end
-          puts nsenter_data
+
+          output_options = {}
+          output_options[:prefix] = false if !options[:prefix]
+          machine.ui.output(nsenter_data.chomp!, **output_options) if !nsenter_data.empty?
 
           exit 0 if options[:interactive]
         end
